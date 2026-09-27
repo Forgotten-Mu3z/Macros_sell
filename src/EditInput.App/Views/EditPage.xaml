@@ -1,0 +1,101 @@
+<UserControl x:Class="EditInput.App.Views.EditPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:EditInput.App.Controls">
+    <StackPanel>
+        <!-- remap mode notice -->
+        <Border Style="{StaticResource Card}" Background="{StaticResource AccentSoftBrush}" BorderBrush="{StaticResource AccentBrush}"
+                Visibility="{Binding Editor.IsRemap, Converter={StaticResource BoolToVis}}">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="Use Edit Automation" Click="OnUseAutomation" VerticalAlignment="Center" />
+                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,16,0"
+                           Text="This profile is in Simple Remap mode: one input → one input, every automation feature below is off. Mappings are on the Simple Remap page." />
+            </DockPanel>
+        </Border>
+
+        <Grid IsEnabled="{Binding Editor.IsAutomation}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- left column -->
+            <StackPanel>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Binds" Style="{StaticResource CardTitle}" />
+                        <UniformGrid Columns="2">
+                            <ContentControl Content="{Binding Editor.Edit}" ContentTemplate="{StaticResource BindSlotTemplate}" Margin="0,0,8,0" />
+                            <ContentControl Content="{Binding Editor.Select}" ContentTemplate="{StaticResource BindSlotTemplate}" Margin="8,0,0,0" />
+                            <ContentControl Content="{Binding Editor.Reset}" ContentTemplate="{StaticResource BindSlotTemplate}" Margin="0,0,8,0" />
+                            <ContentControl Content="{Binding Editor.Confirm}" ContentTemplate="{StaticResource BindSlotTemplate}" Margin="8,0,0,0" />
+                        </UniformGrid>
+                        <TextBlock Style="{StaticResource Hint}"
+                                   Text="Hold EDIT and the app holds SELECT for you until EDIT is released. Any key, mouse button or controller button works; click a box to change it." />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Behavior" Style="{StaticResource CardTitle}" />
+
+                        <TextBlock Text="RESET BEFORE SELECT" Style="{StaticResource SectionLabel}" />
+                        <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Editor.ResetBeforeSelect}" Margin="0,0,0,4"
+                                  AutomationProperties.Name="Reset before select" />
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,14"
+                                   Text="Taps RESET once when EDIT is pressed, waits the reset delay, then starts SELECT." />
+
+                        <TextBlock Text="SELECT MODE" Style="{StaticResource SectionLabel}" />
+                        <ComboBox ItemsSource="{Binding Editor.SelectModes}" DisplayMemberPath="Display" SelectedValuePath="Value"
+                                  SelectedValue="{Binding Editor.SelectMode}" Margin="0,0,0,14" AutomationProperties.Name="Select mode" />
+
+                        <TextBlock Text="AUTO CONFIRM" Style="{StaticResource SectionLabel}" />
+                        <ComboBox ItemsSource="{Binding Editor.ConfirmModes}" DisplayMemberPath="Display" SelectedValuePath="Value"
+                                  SelectedValue="{Binding Editor.AutoConfirm}" Margin="0,0,0,14" AutomationProperties.Name="Auto confirm" />
+
+                        <TextBlock Text="DEVICE MODE" Style="{StaticResource SectionLabel}" />
+                        <ComboBox ItemsSource="{Binding Editor.DeviceModes}" DisplayMemberPath="Display" SelectedValuePath="Value"
+                                  SelectedValue="{Binding Editor.DeviceMode}" AutomationProperties.Name="Device mode" />
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,0"
+                                   Text="Hybrid lets EDIT and SELECT come from different devices (e.g. keyboard E + controller RT)." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- right column -->
+            <StackPanel Grid.Column="2">
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Timing" Style="{StaticResource CardTitle}" />
+                        <c:SliderSetting Label="RESET DELAY" Hint="Reset → Select" Minimum="0" Maximum="100" Value="{Binding Editor.ResetDelayMs}" />
+                        <c:SliderSetting Label="SELECT DELAY" Hint="Edit → Select" Minimum="0" Maximum="100" Value="{Binding Editor.SelectDelayMs}" />
+                        <c:SliderSetting Label="TAP DURATION" Hint="How long Reset / Confirm / Tap Once are held" Minimum="0" Maximum="100" Value="{Binding Editor.TapDurationMs}" />
+                        <c:SliderSetting Label="CONFIRM DELAY" Hint="Select release → Confirm" Minimum="0" Maximum="100" Value="{Binding Editor.ConfirmDelayMs}" />
+                        <TextBlock Style="{StaticResource Hint}"
+                                   Text="Delays use a high-resolution monotonic clock. 0 ms runs the next step immediately. Most games need a tap of at least one frame (≈7–16 ms) to register." />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Global Hotkeys" Style="{StaticResource CardTitle}" />
+                        <UniformGrid Columns="2">
+                            <ContentControl Content="{Binding Settings.Toggle}" ContentTemplate="{StaticResource BindSlotTemplate}" Margin="0,0,8,0" />
+                            <ContentControl Content="{Binding Settings.EmergencyStop}" ContentTemplate="{StaticResource BindSlotTemplate}" Margin="8,0,0,0" />
+                        </UniformGrid>
+                        <TextBlock Style="{StaticResource Hint}"
+                                   Text="Emergency Stop releases every generated input and stays stopped until you click ENABLE." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <Border Style="{StaticResource Card}" Visibility="{Binding HasIssues, Converter={StaticResource BoolToVis}}">
+            <StackPanel>
+                <TextBlock Text="Bind Check" Style="{StaticResource CardTitle}" />
+                <ItemsControl ItemsSource="{Binding Issues}" ItemTemplate="{StaticResource IssueTemplate}" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

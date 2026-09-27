@@ -1,0 +1,144 @@
+<UserControl x:Class="EditInput.App.Views.DebugPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <!-- One visualiser tile: label + value, green while "down". -->
+        <Style x:Key="Tile" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="Margin" Value="0,0,10,10" />
+        </Style>
+        <Style x:Key="TileValue" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontFamily" Value="Consolas" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Input Visualizer" Style="{StaticResource CardTitle}" />
+                <UniformGrid Columns="4">
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="EDIT" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.Edit}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource TileValue}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Debug.EditDown}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="SELECT" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.Select}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource TileValue}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Debug.SelectDown}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="RESET" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.Reset}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource TileValue}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Debug.ResetDown}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="CONFIRM" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.Confirm}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource TileValue}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Debug.ConfirmDown}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource GreenBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="CONTROLLER" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.Controller}" Style="{StaticResource TileValue}" FontSize="14" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="RT" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.RightTrigger}" Style="{StaticResource TileValue}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="LT" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.LeftTrigger}" Style="{StaticResource TileValue}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Tile}">
+                        <StackPanel>
+                            <TextBlock Text="APPLICATION STATE" Style="{StaticResource SectionLabel}" />
+                            <TextBlock Text="{Binding Debug.AppState}" Style="{StaticResource TileValue}" FontSize="14"
+                                       Foreground="{StaticResource AccentBrush}" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Button Content="Clear" Command="{Binding Debug.ClearCommand}" />
+                        <Button Content="Open Log Folder" Margin="8,0,0,0" Command="{Binding Settings.OpenLogFolderCommand}" />
+                    </StackPanel>
+                    <TextBlock Text="Event Log" Style="{StaticResource CardTitle}" Margin="0" VerticalAlignment="Center" />
+                </DockPanel>
+                <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Settings.DebugLogging}" Content="Debug logging"
+                          Margin="0,0,0,8" />
+                <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,10"
+                           Text="Records Edit/Select/Reset/Confirm transitions, controller connects, profile changes and emergency stops with millisecond timestamps. Normal typing is never logged – only your configured control inputs." />
+                <ListBox ItemsSource="{Binding Debug.Lines}" Height="300" FontFamily="Consolas" FontSize="12"
+                         VirtualizingPanel.IsVirtualizing="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         x:Name="LogList">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                            <Setter Property="Padding" Value="6,1" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

@@ -135,6 +135,7 @@ public sealed class EngineHost : IDisposable
     /// </summary>
     public void EmergencyStop(string reason)
     {
+        _output.AllowOutput = false; // refuse any press the engine thread might still be about to make
         ReleaseAllNow("Emergency Stop");
         Post(e => e.EmergencyStop(reason));
     }

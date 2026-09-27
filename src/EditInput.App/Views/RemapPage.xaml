@@ -1,0 +1,65 @@
+<UserControl x:Class="EditInput.App.Views.RemapPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Text="Simple Remap" Style="{StaticResource CardTitle}" />
+                <TextBlock Text="SIMPLE REMAP MODE" Style="{StaticResource SectionLabel}" />
+                <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Editor.IsRemap}" Margin="0,0,0,10"
+                          AutomationProperties.Name="Simple remap mode" />
+                <TextBlock Style="{StaticResource Hint}" TextWrapping="Wrap">
+                    Strict one-input-to-one-input remapping for accessibility-style setups. While this mode is on, every automation
+                    feature (Reset, delays, Select modes, Auto Confirm) is disabled: pressing a source presses its target, releasing it
+                    releases the target, nothing else is ever generated. Keyboard and mouse sources are hidden from other apps and
+                    replaced by the target. Controller sources can't be hidden from games.
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}" IsEnabled="{Binding Editor.IsRemap}">
+            <StackPanel>
+                <DockPanel Margin="0,0,0,10">
+                    <Button DockPanel.Dock="Right" Command="{Binding Editor.AddRemapCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" FontFamily="{StaticResource IconFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <TextBlock Text="Add Mapping" />
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Mappings" Style="{StaticResource CardTitle}" Margin="0" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,12" Text="No mappings yet – click Add Mapping."
+                           Visibility="{Binding Editor.Remaps.Count, Converter={StaticResource ZeroToVis}}" />
+
+                <ItemsControl ItemsSource="{Binding Editor.Remaps}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ContentControl Content="{Binding Source}" ContentTemplate="{StaticResource BindSlotTemplate}" />
+                                <TextBlock Grid.Column="1" Text="&#xE72A;" FontFamily="{StaticResource IconFont}" FontSize="16"
+                                           Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,8,0,0" />
+                                <ContentControl Grid.Column="2" Content="{Binding Target}" ContentTemplate="{StaticResource BindSlotTemplate}" />
+                                <Button Grid.Column="3" Style="{StaticResource IconButton}" Content="&#xE74D;" ToolTip="Remove mapping"
+                                        Command="{Binding RemoveCommand}" Margin="10,8,0,0" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Card}" Visibility="{Binding HasIssues, Converter={StaticResource BoolToVis}}">
+            <StackPanel>
+                <TextBlock Text="Bind Check" Style="{StaticResource CardTitle}" />
+                <ItemsControl ItemsSource="{Binding Issues}" ItemTemplate="{StaticResource IssueTemplate}" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

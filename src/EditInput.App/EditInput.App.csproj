@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>EditInput.App</RootNamespace>
+    <AssemblyName>FortniteEditInput</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <!-- Only used for the tray icon (System.Windows.Forms.NotifyIcon). -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- WinForms brings global usings that clash with WPF names; keep only the neutral ones. -->
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- WPF reads DPI awareness from app.manifest; the WinForms analyzer warning does not apply. -->
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EditInput.Core\EditInput.Core.csproj" />
+    <ProjectReference Include="..\EditInput.Windows\EditInput.Windows.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\icon256.png" />
+  </ItemGroup>
+</Project>
