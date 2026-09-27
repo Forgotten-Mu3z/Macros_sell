@@ -13,7 +13,7 @@
             </DockPanel>
         </Border>
 
-        <Grid IsEnabled="{Binding Editor.IsAutomation}">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="18" />
@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- left column -->
-            <StackPanel>
+            <StackPanel IsEnabled="{Binding Editor.IsAutomation}">
                 <Border Style="{StaticResource Card}">
                     <StackPanel>
                         <TextBlock Text="Binds" Style="{StaticResource CardTitle}" />
@@ -65,7 +65,7 @@
 
             <!-- right column -->
             <StackPanel Grid.Column="2">
-                <Border Style="{StaticResource Card}">
+                <Border Style="{StaticResource Card}" IsEnabled="{Binding Editor.IsAutomation}">
                     <StackPanel>
                         <TextBlock Text="Timing" Style="{StaticResource CardTitle}" />
                         <c:SliderSetting Label="RESET DELAY" Hint="Reset → Select" Minimum="0" Maximum="100" Value="{Binding Editor.ResetDelayMs}" />

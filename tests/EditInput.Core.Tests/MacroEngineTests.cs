@@ -211,6 +211,17 @@ public class MacroEngineTests
     }
 
     [Fact]
+    public void DisableDuringEmergencyStop_DoesNotAllowToggleHotkeyToRestart()
+    {
+        var f = new EngineFixture();
+        f.Down(F12);
+        f.Engine.Disable("button");
+        Assert.Equal(EngineState.EmergencyStopped, f.Engine.State);
+        f.Down(F8);
+        Assert.Equal(EngineState.EmergencyStopped, f.Engine.State);
+    }
+
+    [Fact]
     public void EmergencyStop_WorksEvenWhenDisabled()
     {
         var f = new EngineFixture(enable: false);

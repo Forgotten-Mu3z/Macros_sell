@@ -102,6 +102,13 @@ public sealed class MacroEngine
     public void Disable(string reason)
     {
         if (_state == EngineState.Disabled) return;
+        if (_state is EngineState.EmergencyStopped or EngineState.Error)
+        {
+            // Already released and gated. Staying here keeps "only the Enable button restarts" true:
+            // moving to Disabled would let the toggle hotkey re-enable after an emergency stop.
+            CancelAndRelease(reason);
+            return;
+        }
         CancelAndRelease(reason);
         _out.AllowOutput = false;
         SetState(EngineState.Disabled);

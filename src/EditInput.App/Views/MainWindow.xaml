@@ -4,7 +4,7 @@
         xmlns:v="clr-namespace:EditInput.App.Views"
         xmlns:vm="clr-namespace:EditInput.App.ViewModels"
         Title="Fortnite Edit Input" Width="1100" Height="780" MinWidth="960" MinHeight="660"
-        WindowStartupLocation="CenterScreen" Background="{StaticResource BgBrush}"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource BgBrush}" Foreground="{StaticResource TextBrush}"
         Icon="/Assets/app.ico" FontFamily="{StaticResource UiFont}" UseLayoutRounding="True"
         TextOptions.TextFormattingMode="Display">
     <Grid>

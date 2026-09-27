@@ -37,10 +37,9 @@
     <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
 
     <!-- ───── text ───── -->
-    <Style TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
-        <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
-    </Style>
+    <!-- No Foreground here on purpose: an app-level implicit TextBlock style also hits TextBlocks inside control
+         templates and would override button text colours. Windows set Foreground and it inherits. -->
+    <Style TargetType="TextBlock" />
 
     <Style x:Key="SectionLabel" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
@@ -370,13 +369,13 @@
                                           ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                           ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                           ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" />
-                        <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True"
-                               Focusable="False" PopupAnimation="Fade">
+                        <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade"
+                               IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}">
                             <Border Background="{StaticResource CardBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
                                     CornerRadius="7" Padding="4" Margin="0,4,0,0"
                                     MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="320">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <ItemsPresenter />
+                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
                             </Border>
                         </Popup>
@@ -398,7 +397,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollBar">
-                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                    <Track x:Name="PART_Track" IsDirectionReversed="True" Orientation="Vertical">
                         <Track.Thumb>
                             <Thumb>
                                 <Thumb.Template>
@@ -420,7 +419,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ScrollBar">
-                            <Track x:Name="PART_Track">
+                            <Track x:Name="PART_Track" Orientation="Horizontal">
                                 <Track.Thumb>
                                     <Thumb>
                                         <Thumb.Template>
