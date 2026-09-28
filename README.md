@@ -61,6 +61,10 @@ The app doesn't need admin rights. See [Troubleshooting](#troubleshooting) for w
 
 ## Build & run
 
+**Easiest:** double-click **`run.bat`** in the repo folder. The first time, it builds a self-contained
+`publish\FortniteEditInput.exe` (needs the .NET 8 SDK). After that it just starts the app. Run `run.bat rebuild`
+after pulling new code.
+
 ```powershell
 git clone <this repo>
 cd Macros_sell
