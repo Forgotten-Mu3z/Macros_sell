@@ -38,7 +38,7 @@ strict one-input-to-one-input remapping with no automation.
 | Binds | Edit (default **E**), Select (default **P**), Reset, Confirm, Enable/Disable (default **F8**), Emergency Stop (default **F12**). Any keyboard key, mouse button (L/R/M/4/5) or controller button (A B X Y, LB RB, LT RT, LS RS, D-Pad, View, Menu, stick directions). |
 | Capture | Click a bind box, then press the input. **Esc** cancels. Automation is paused until the captured input is released, so the bind press can't trigger anything. |
 | Reset Before Select | Optional: Edit → Reset tap → delay → Select. Reset happens **once** per activation. |
-| Timing | Reset → Select delay (0–100 ms, default 10), Edit → Select delay (0–100 ms, default 0), tap duration, confirm delay. You can use the slider or type an exact value. |
+| Timing | **1 ms between every step by default**: Edit → Select delay, Reset → Select delay, tap duration and confirm delay are each 0–100 ms (default 1). One click on **All 1 ms** resets them. Use the slider or type an exact value. |
 | Select modes | Hold Until Edit Released (default), Tap Once, Toggle. |
 | Auto Confirm | Off (default), Confirm On Edit Release, Confirm After Select Release. When Off, the app never generates Confirm. |
 | Devices | Keyboard & Mouse, Controller, or Hybrid (mix devices, e.g. keyboard Edit + controller RT Select). |

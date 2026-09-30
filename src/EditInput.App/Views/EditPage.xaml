@@ -119,13 +119,23 @@
             <StackPanel Grid.Column="2">
                 <Border Style="{StaticResource Card}" IsEnabled="{Binding Editor.IsAutomation}">
                     <StackPanel>
-                        <ContentControl Content="Timing" ContentTemplate="{StaticResource CardHeader}" />
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource AccentButton}" Padding="12,5" FontSize="12"
+                                    VerticalAlignment="Top" Command="{Binding Editor.OneMsStepsCommand}"
+                                    ToolTip="Set every delay and tap to 1 ms">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    <TextBlock Text="All 1 ms" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                            <ContentControl Content="Timing" ContentTemplate="{StaticResource CardHeader}" />
+                        </DockPanel>
                         <c:SliderSetting Label="RESET DELAY" Hint="Reset → Select" Minimum="0" Maximum="100" Value="{Binding Editor.ResetDelayMs}" />
                         <c:SliderSetting Label="SELECT DELAY" Hint="Edit → Select" Minimum="0" Maximum="100" Value="{Binding Editor.SelectDelayMs}" />
                         <c:SliderSetting Label="TAP DURATION" Hint="How long taps are held" Minimum="0" Maximum="100" Value="{Binding Editor.TapDurationMs}" />
                         <c:SliderSetting Label="CONFIRM DELAY" Hint="Select up → Confirm" Minimum="0" Maximum="100" Value="{Binding Editor.ConfirmDelayMs}" />
                         <TextBlock Style="{StaticResource Hint}" FontSize="11.5"
-                                   Text="0 ms runs the next step immediately. Most games need a tap of at least one frame (≈7–16 ms) to register it." />
+                                   Text="Default is 1 ms between every step. If the game misses the Reset or Confirm tap, raise TAP DURATION a little (games read input once per frame, ≈4–16 ms)." />
                     </StackPanel>
                 </Border>
 

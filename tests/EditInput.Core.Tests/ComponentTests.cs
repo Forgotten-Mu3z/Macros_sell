@@ -374,3 +374,39 @@ public class EngineHostTests
         public string[] Events() { lock (_g) return _events.ToArray(); }
     }
 }
+
+public class ProfileMigrationTests : IDisposable
+{
+    private readonly string _dir = Path.Combine(Path.GetTempPath(), "editinput-mig-" + Guid.NewGuid().ToString("N"));
+
+    public void Dispose()
+    {
+        try { Directory.Delete(_dir, true); } catch { }
+    }
+
+    [Fact]
+    public void Version1File_OldDefaultsBecomeOneMs_CustomValuesKept()
+    {
+        Directory.CreateDirectory(_dir);
+        File.WriteAllText(Path.Combine(_dir, "profiles.json"), """
+        {
+          "version": 1,
+          "profiles": [
+            { "name": "Default", "resetDelayMs": 10, "selectDelayMs": 0, "tapDurationMs": 10, "confirmDelayMs": 10 },
+            { "name": "Tuned",   "resetDelayMs": 23, "selectDelayMs": 4, "tapDurationMs": 15, "confirmDelayMs": 30 }
+          ]
+        }
+        """);
+
+        var m = new ProfileManager(_dir, NullLogger.Instance);
+        var d = m.Get("Default")!;
+        Assert.Equal((1, 1, 1, 1), (d.ResetDelayMs, d.SelectDelayMs, d.TapDurationMs, d.ConfirmDelayMs));
+        var t = m.Get("Tuned")!;
+        Assert.Equal((23, 4, 15, 30), (t.ResetDelayMs, t.SelectDelayMs, t.TapDurationMs, t.ConfirmDelayMs));
+
+        // Migration runs once: a user can go back to 0 ms select delay and it sticks.
+        d.SelectDelayMs = 0;
+        m.Save(d);
+        Assert.Equal(0, new ProfileManager(_dir, NullLogger.Instance).Get("Default")!.SelectDelayMs);
+    }
+}

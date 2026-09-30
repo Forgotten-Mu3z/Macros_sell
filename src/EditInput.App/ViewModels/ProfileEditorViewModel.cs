@@ -47,6 +47,7 @@ public sealed class ProfileEditorViewModel : ObservableObject
         Reset = new BindSlotViewModel("RESET", BindRole.Reset, () => _p.ResetBind, v => { _p.ResetBind = v; Changed(true); }, capture);
         Confirm = new BindSlotViewModel("CONFIRM", BindRole.Confirm, () => _p.ConfirmBind, v => { _p.ConfirmBind = v; Changed(true); }, capture);
         AddRemapCommand = new RelayCommand(AddRemap);
+        OneMsStepsCommand = new RelayCommand(SetOneMsSteps);
     }
 
     public Profile Profile => _p;
@@ -59,6 +60,20 @@ public sealed class ProfileEditorViewModel : ObservableObject
 
     public ObservableCollection<RemapEntryViewModel> Remaps { get; } = new();
     public ICommand AddRemapCommand { get; }
+
+    /// <summary>Sets every timing to 1 ms (Edit → Reset → Select → Confirm, 1 ms apart).</summary>
+    public ICommand OneMsStepsCommand { get; }
+
+    private void SetOneMsSteps()
+    {
+        const int step = Profile.DefaultStepMs;
+        _p.SelectDelayMs = _p.ResetDelayMs = _p.TapDurationMs = _p.ConfirmDelayMs = step;
+        OnPropertyChanged(nameof(SelectDelayMs));
+        OnPropertyChanged(nameof(ResetDelayMs));
+        OnPropertyChanged(nameof(TapDurationMs));
+        OnPropertyChanged(nameof(ConfirmDelayMs));
+        Changed(true);
+    }
 
     public IReadOnlyList<Option<SelectMode>> SelectModes { get; } = new[]
     {

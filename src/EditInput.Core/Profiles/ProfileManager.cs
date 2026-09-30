@@ -4,7 +4,10 @@ namespace EditInput.Core.Profiles;
 
 public sealed class ProfileFile
 {
-    public int Version { get; set; } = 1;
+    /// <summary>2 = 1 ms step defaults (version 1 used 10 ms / 0 ms).</summary>
+    public const int CurrentVersion = 2;
+
+    public int Version { get; set; } = CurrentVersion;
     public List<Profile> Profiles { get; set; } = new();
 }
 
@@ -34,6 +37,27 @@ public sealed class ProfileManager
         {
             _profiles.AddRange(Profile.CreateDefaults());
             Persist();
+        }
+        else if (file!.Version < ProfileFile.CurrentVersion)
+        {
+            MigrateToOneMsSteps();
+            Persist();
+        }
+    }
+
+    /// <summary>
+    /// Version 1 shipped 10 ms reset/tap/confirm and 0 ms select delay (Fast Edit: 5/8). Timings still at
+    /// those old defaults move to the new 1 ms default; anything the user tuned by hand is kept.
+    /// </summary>
+    private void MigrateToOneMsSteps()
+    {
+        const int step = Profile.DefaultStepMs;
+        foreach (var p in _profiles)
+        {
+            if (p.ResetDelayMs is 10 or 5) p.ResetDelayMs = step;
+            if (p.TapDurationMs is 10 or 8) p.TapDurationMs = step;
+            if (p.ConfirmDelayMs == 10) p.ConfirmDelayMs = step;
+            if (p.SelectDelayMs == 0) p.SelectDelayMs = step;
         }
     }
 
@@ -114,7 +138,7 @@ public sealed class ProfileManager
 
     private void Persist()
     {
-        _store.Save(new ProfileFile { Profiles = _profiles });
+        _store.Save(new ProfileFile { Version = ProfileFile.CurrentVersion, Profiles = _profiles });
         ListChanged?.Invoke();
     }
 

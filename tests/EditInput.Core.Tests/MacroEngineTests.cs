@@ -573,3 +573,67 @@ public class RemapTests
         Assert.Contains(pad, cfg.WatchedInputs());
     }
 }
+
+public class DefaultTimingTests
+{
+    private static void UseDefaults(Profile p)
+    {
+        var d = new Profile();
+        p.SelectDelayMs = d.SelectDelayMs;
+        p.ResetDelayMs = d.ResetDelayMs;
+        p.TapDurationMs = d.TapDurationMs;
+        p.ConfirmDelayMs = d.ConfirmDelayMs;
+    }
+
+    [Fact]
+    public void Defaults_AreOneMillisecondEverywhere()
+    {
+        var p = new Profile();
+        Assert.Equal(1, p.SelectDelayMs);
+        Assert.Equal(1, p.ResetDelayMs);
+        Assert.Equal(1, p.TapDurationMs);
+        Assert.Equal(1, p.ConfirmDelayMs);
+        Assert.Equal(SelectMode.HoldUntilEditReleased, p.SelectMode);
+        Assert.All(Profile.CreateDefaults(), x =>
+        {
+            Assert.Equal(1, x.SelectDelayMs);
+            Assert.Equal(1, x.ResetDelayMs);
+            Assert.Equal(1, x.TapDurationMs);
+            Assert.Equal(1, x.ConfirmDelayMs);
+        });
+    }
+
+    [Fact]
+    public void Default_HoldingEdit_HoldsSelect_OneMsLater_UntilEditReleased()
+    {
+        var f = new EngineFixture(UseDefaults);
+        var t0 = f.Clock.Ms;
+        f.Down(E);
+        f.Advance(1);
+        Assert.Equal(new[] { "P↓" }, f.Events);
+        Assert.Equal(t0 + 1, f.Backend.Log[0].AtMs, 3);
+
+        f.Advance(750); // Select stays held the whole time Edit is held
+        Assert.True(f.Output.IsHeld(P));
+        Assert.Single(f.Events);
+
+        f.Up(E);
+        Assert.Equal(new[] { "P↓", "P↑" }, f.Events);
+        Assert.True(f.NothingHeld);
+    }
+
+    [Fact]
+    public void Default_ResetBeforeSelect_OneMsBetweenEveryStep()
+    {
+        var f = new EngineFixture(p => { UseDefaults(p); p.ResetBeforeSelect = true; });
+        var t0 = f.Clock.Ms;
+        f.Down(E);
+        f.Advance(10);
+        Assert.Equal(new[] { "R↓", "R↑", "P↓" }, f.Events);
+        Assert.Equal(t0 + 1, f.Backend.Log[0].AtMs, 3); // Edit → Reset down
+        Assert.Equal(t0 + 2, f.Backend.Log[1].AtMs, 3); // Reset down → up
+        Assert.Equal(t0 + 3, f.Backend.Log[2].AtMs, 3); // Reset up → Select down
+        f.Up(E);
+        Assert.True(f.NothingHeld);
+    }
+}

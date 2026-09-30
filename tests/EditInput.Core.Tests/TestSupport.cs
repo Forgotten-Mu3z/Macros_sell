@@ -65,7 +65,16 @@ public sealed class EngineFixture
         Backend = new RecordingBackend(Clock);
         Output = new OutputManager(new[] { Backend }, NullLogger.Instance);
         Engine = new MacroEngine(Output, Clock, NullLogger.Instance, probe);
-        Profile = new Profile { ResetBind = R, ConfirmBind = C };
+        // Scenario tests pin their own timings; defaults are covered separately in DefaultTimingTests.
+        Profile = new Profile
+        {
+            ResetBind = R,
+            ConfirmBind = C,
+            SelectDelayMs = 0,
+            ResetDelayMs = 10,
+            TapDurationMs = 10,
+            ConfirmDelayMs = 10,
+        };
         configure?.Invoke(Profile);
         Engine.ApplyConfig(EngineConfig.From(Profile.Normalize(), Settings));
         if (enable) Engine.Enable("test");

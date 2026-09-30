@@ -49,6 +49,9 @@ public sealed class Profile
 {
     public const int MaxDelayMs = 100;
 
+    /// <summary>Default gap between every step of the sequence.</summary>
+    public const int DefaultStepMs = 1;
+
     public string Name { get; set; } = "Default";
     public EngineMode Mode { get; set; } = EngineMode.EditAutomation;
 
@@ -62,13 +65,13 @@ public sealed class Profile
     public AutoConfirmMode AutoConfirm { get; set; } = AutoConfirmMode.Off;
 
     /// <summary>Reset → Select delay (0–100 ms).</summary>
-    public int ResetDelayMs { get; set; } = 10;
+    public int ResetDelayMs { get; set; } = DefaultStepMs;
     /// <summary>Edit → Select delay (0–100 ms).</summary>
-    public int SelectDelayMs { get; set; }
+    public int SelectDelayMs { get; set; } = DefaultStepMs;
     /// <summary>How long tapped outputs (Reset, Confirm, Tap Once select) are held down (0–100 ms).</summary>
-    public int TapDurationMs { get; set; } = 10;
+    public int TapDurationMs { get; set; } = DefaultStepMs;
     /// <summary>Gap between Select release and an automatic Confirm (0–100 ms).</summary>
-    public int ConfirmDelayMs { get; set; } = 10;
+    public int ConfirmDelayMs { get; set; } = DefaultStepMs;
 
     public int TriggerThresholdPercent { get; set; } = 50;
     public int StickDeadzonePercent { get; set; } = 10;
@@ -132,8 +135,6 @@ public sealed class Profile
             Name = "Fast Edit",
             ResetBind = InputId.Mouse(MouseButton.Right),
             ResetBeforeSelect = true,
-            ResetDelayMs = 5,
-            TapDurationMs = 8,
         };
     }
 }
