@@ -45,7 +45,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     private bool _capturing;
     private string _captureText = "";
     private string _captureTitle = "";
-    private string _statusText = "● Disabled";
+    private string _statusText = "DISABLED";
     private Brush _statusBrush = Brushes.Gray;
     private string _stateText = "DISABLED";
     private string? _banner;
@@ -203,10 +203,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             _lastSnapshot = snap;
             (StatusText, StatusBrush) = snap.State switch
             {
-                EngineState.EmergencyStopped => ("● EMERGENCY STOP", Res("RedBrush")),
-                EngineState.Error => ("● Error", Res("RedBrush")),
-                EngineState.Disabled => ("● Disabled", Res("GrayBrush")),
-                _ => ("● Enabled", Res("GreenBrush")),
+                EngineState.EmergencyStopped => ("EMERGENCY STOP", Res("RedBrush")),
+                EngineState.Error => ("ERROR", Res("RedBrush")),
+                EngineState.Disabled => ("DISABLED", Res("GrayBrush")),
+                _ => ("ENABLED", Res("GreenBrush")),
             };
             StateText = StateName(snap);
             Banner = snap.State switch

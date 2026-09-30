@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using EditInput.App.Mvvm;
+using EditInput.Core.Input;
 using EditInput.Core.Profiles;
 
 namespace EditInput.App.ViewModels;
@@ -9,6 +10,9 @@ public sealed record Option<T>(T Value, string Display)
 {
     public override string ToString() => Display;
 }
+
+/// <summary>One chip in the live sequence preview (Kind: key, wait, hold, info).</summary>
+public sealed record SequenceStep(string Text, string Kind);
 
 public sealed class RemapEntryViewModel : ObservableObject
 {
@@ -58,7 +62,7 @@ public sealed class ProfileEditorViewModel : ObservableObject
 
     public IReadOnlyList<Option<SelectMode>> SelectModes { get; } = new[]
     {
-        new Option<SelectMode>(SelectMode.HoldUntilEditReleased, "Hold Until Edit Released"),
+        new Option<SelectMode>(SelectMode.HoldUntilEditReleased, "Hold"),
         new Option<SelectMode>(SelectMode.TapOnce, "Tap Once"),
         new Option<SelectMode>(SelectMode.Toggle, "Toggle"),
     };
@@ -66,8 +70,8 @@ public sealed class ProfileEditorViewModel : ObservableObject
     public IReadOnlyList<Option<AutoConfirmMode>> ConfirmModes { get; } = new[]
     {
         new Option<AutoConfirmMode>(AutoConfirmMode.Off, "Off"),
-        new Option<AutoConfirmMode>(AutoConfirmMode.ConfirmOnEditRelease, "Confirm On Edit Release"),
-        new Option<AutoConfirmMode>(AutoConfirmMode.ConfirmAfterSelectRelease, "Confirm After Select Release"),
+        new Option<AutoConfirmMode>(AutoConfirmMode.ConfirmOnEditRelease, "On Edit Release"),
+        new Option<AutoConfirmMode>(AutoConfirmMode.ConfirmAfterSelectRelease, "After Select Release"),
     };
 
     public IReadOnlyList<Option<DeviceMode>> DeviceModes { get; } = new[]
@@ -197,5 +201,83 @@ public sealed class ProfileEditorViewModel : ObservableObject
             Changed(true);
         });
 
-    private void Changed(bool immediate) => _changed(immediate);
+    private void Changed(bool immediate)
+    {
+        OnPropertyChanged(nameof(SequenceSteps));
+        OnPropertyChanged(nameof(SelectModeHint));
+        OnPropertyChanged(nameof(ConfirmModeHint));
+        OnPropertyChanged(nameof(DeviceModeHint));
+        _changed(immediate);
+    }
+
+    public string SelectModeHint => _p.SelectMode switch
+    {
+        SelectMode.TapOnce => "Select is tapped once when Edit is pressed.",
+        SelectMode.Toggle => "First Edit press holds Select, the next Edit press releases it.",
+        _ => "Select is held for as long as you hold Edit.",
+    };
+
+    public string ConfirmModeHint => _p.AutoConfirm switch
+    {
+        AutoConfirmMode.ConfirmOnEditRelease => "Confirm is tapped when you let go of Edit.",
+        AutoConfirmMode.ConfirmAfterSelectRelease => "Confirm is tapped right after Select is released.",
+        _ => "No Confirm input is ever generated.",
+    };
+
+    public string DeviceModeHint => _p.DeviceMode switch
+    {
+        DeviceMode.KeyboardMouse => "Only keyboard and mouse binds are used.",
+        DeviceMode.Controller => "Only controller binds are used (hotkeys still work).",
+        _ => "Mix devices freely, e.g. keyboard E + controller RT.",
+    };
+
+    /// <summary>Plain-language preview of what one Edit press will do with the current settings.</summary>
+    public IReadOnlyList<SequenceStep> SequenceSteps
+    {
+        get
+        {
+            var steps = new List<SequenceStep>();
+            if (_p.Mode == EngineMode.SimpleRemap)
+            {
+                steps.Add(new("Simple Remap mode – edit automation is off", "info"));
+                return steps;
+            }
+
+            string Name(InputId id, string fallback) => id.IsNone ? fallback : id.DisplayName;
+            var edit = Name(_p.EditBind, "Edit");
+            var select = Name(_p.SelectBind, "Select");
+
+            steps.Add(new($"{edit} down", "key"));
+            if (_p.SelectDelayMs > 0) steps.Add(new($"{_p.SelectDelayMs} ms", "wait"));
+            if (_p.ResetBeforeSelect && !_p.ResetBind.IsNone)
+            {
+                steps.Add(new($"tap {_p.ResetBind.DisplayName}", "key"));
+                if (_p.ResetDelayMs > 0) steps.Add(new($"{_p.ResetDelayMs} ms", "wait"));
+            }
+
+            switch (_p.SelectMode)
+            {
+                case SelectMode.TapOnce:
+                    steps.Add(new($"tap {select}", "hold"));
+                    break;
+                case SelectMode.Toggle:
+                    steps.Add(new($"hold {select}", "hold"));
+                    steps.Add(new($"{edit} again", "key"));
+                    steps.Add(new($"{select} up", "key"));
+                    break;
+                default:
+                    steps.Add(new($"hold {select}", "hold"));
+                    steps.Add(new($"{edit} up", "key"));
+                    steps.Add(new($"{select} up", "key"));
+                    break;
+            }
+
+            if (_p.AutoConfirm != AutoConfirmMode.Off && !_p.ConfirmBind.IsNone)
+            {
+                if (_p.ConfirmDelayMs > 0) steps.Add(new($"{_p.ConfirmDelayMs} ms", "wait"));
+                steps.Add(new($"tap {_p.ConfirmBind.DisplayName}", "key"));
+            }
+            return steps;
+        }
+    }
 }

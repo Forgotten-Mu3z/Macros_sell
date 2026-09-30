@@ -12,7 +12,7 @@
             <StackPanel>
                 <Border Style="{StaticResource Card}">
                     <StackPanel>
-                        <TextBlock Text="Startup" Style="{StaticResource CardTitle}" />
+                        <ContentControl Content="Startup" ContentTemplate="{StaticResource CardHeader}" />
                         <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Settings.StartWithWindows}" Content="Start With Windows" Margin="0,0,0,12" />
                         <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Settings.StartMinimized}" Content="Start Minimized" Margin="0,0,0,12" />
                         <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Settings.MinimizeToTray}" Content="Minimize To Tray" Margin="0,0,0,12" />
@@ -22,7 +22,7 @@
 
                 <Border Style="{StaticResource Card}">
                     <StackPanel>
-                        <TextBlock Text="Input" Style="{StaticResource CardTitle}" />
+                        <ContentControl Content="Input" ContentTemplate="{StaticResource CardHeader}" />
                         <TextBlock Text="CONTROLLER POLLING RATE" Style="{StaticResource SectionLabel}" />
                         <ComboBox ItemsSource="{Binding Settings.PollRates}" DisplayMemberPath="Display" SelectedValuePath="Value"
                                   SelectedValue="{Binding Settings.ControllerPollRateHz}" Margin="0,0,0,6" />
@@ -39,7 +39,7 @@
             <StackPanel Grid.Column="2">
                 <Border Style="{StaticResource Card}">
                     <StackPanel>
-                        <TextBlock Text="Global Hotkeys" Style="{StaticResource CardTitle}" />
+                        <ContentControl Content="Global Hotkeys" ContentTemplate="{StaticResource CardHeader}" />
                         <ContentControl Content="{Binding Settings.Toggle}" ContentTemplate="{StaticResource BindSlotTemplate}" />
                         <ContentControl Content="{Binding Settings.EmergencyStop}" ContentTemplate="{StaticResource BindSlotTemplate}" />
                         <TextBlock Style="{StaticResource Hint}"
@@ -49,7 +49,7 @@
 
                 <Border Style="{StaticResource Card}">
                     <StackPanel>
-                        <TextBlock Text="Data &amp; Privacy" Style="{StaticResource CardTitle}" />
+                        <ContentControl Content="Data &amp; Privacy" ContentTemplate="{StaticResource CardHeader}" />
                         <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,10"
                                    Text="Everything is stored locally in settings.json and profiles.json. No account, no network access, nothing is uploaded." />
                         <TextBlock Text="{Binding Settings.DataDirectory}" FontFamily="Consolas" FontSize="11.5" TextWrapping="Wrap"

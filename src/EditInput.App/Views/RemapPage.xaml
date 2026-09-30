@@ -4,7 +4,7 @@
     <StackPanel>
         <Border Style="{StaticResource Card}">
             <StackPanel>
-                <TextBlock Text="Simple Remap" Style="{StaticResource CardTitle}" />
+                <ContentControl Content="Simple Remap" ContentTemplate="{StaticResource CardHeader}" />
                 <TextBlock Text="SIMPLE REMAP MODE" Style="{StaticResource SectionLabel}" />
                 <CheckBox Style="{StaticResource ToggleSwitch}" IsChecked="{Binding Editor.IsRemap}" Margin="0,0,0,10"
                           AutomationProperties.Name="Simple remap mode" />
@@ -57,7 +57,7 @@
 
         <Border Style="{StaticResource Card}" Visibility="{Binding HasIssues, Converter={StaticResource BoolToVis}}">
             <StackPanel>
-                <TextBlock Text="Bind Check" Style="{StaticResource CardTitle}" />
+                <ContentControl Content="Bind Check" ContentTemplate="{StaticResource CardHeader}" />
                 <ItemsControl ItemsSource="{Binding Issues}" ItemTemplate="{StaticResource IssueTemplate}" />
             </StackPanel>
         </Border>

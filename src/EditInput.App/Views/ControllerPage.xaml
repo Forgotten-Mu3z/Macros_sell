@@ -12,7 +12,7 @@
 
             <Border Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="Controller" Style="{StaticResource CardTitle}" />
+                    <ContentControl Content="Controller" ContentTemplate="{StaticResource CardHeader}" />
                     <TextBlock Text="STATUS" Style="{StaticResource SectionLabel}" />
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
                         <Ellipse Width="10" Height="10" VerticalAlignment="Center" Margin="0,0,10,0">
@@ -43,7 +43,7 @@
 
             <Border Grid.Column="2" Style="{StaticResource Card}">
                 <StackPanel>
-                    <TextBlock Text="Sensitivity" Style="{StaticResource CardTitle}" />
+                    <ContentControl Content="Sensitivity" ContentTemplate="{StaticResource CardHeader}" />
                     <c:SliderSetting Label="TRIGGER THRESHOLD" Hint="LT / RT count as pressed above this" Unit="%"
                                      Minimum="5" Maximum="95" Value="{Binding Editor.TriggerThresholdPercent}" />
                     <c:SliderSetting Label="STICK DEADZONE" Hint="Used when stick directions are binds" Unit="%"
@@ -57,7 +57,7 @@
         <Border Style="{StaticResource Card}">
             <StackPanel>
                 <DockPanel>
-                    <TextBlock Text="Live Controller View" Style="{StaticResource CardTitle}" />
+                    <ContentControl Content="Live Controller View" ContentTemplate="{StaticResource CardHeader}" />
                     <TextBlock Text="Press a button to highlight it. Outlined buttons are used by the current profile."
                                Style="{StaticResource Hint}" HorizontalAlignment="Right" VerticalAlignment="Top" />
                 </DockPanel>

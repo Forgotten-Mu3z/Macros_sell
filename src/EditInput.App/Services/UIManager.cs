@@ -53,10 +53,10 @@ public sealed class UIManager : IDisposable
     {
         var (color, text) = s.State switch
         {
-            EngineState.EmergencyStopped => (Color.FromArgb(255, 77, 90), "EMERGENCY STOP"),
-            EngineState.Error => (Color.FromArgb(255, 77, 90), "Error"),
-            EngineState.Disabled => (Color.FromArgb(107, 114, 128), "Disabled"),
-            _ => (Color.FromArgb(46, 204, 113), "Enabled"),
+            EngineState.EmergencyStopped => (Color.FromArgb(255, 61, 110), "EMERGENCY STOP"),
+            EngineState.Error => (Color.FromArgb(255, 61, 110), "Error"),
+            EngineState.Disabled => (Color.FromArgb(91, 98, 117), "Disabled"),
+            _ => (Color.FromArgb(0, 230, 160), "Enabled"),
         };
         var tip = $"Fortnite Edit Input – {text}";
         if (s.ProfileName.Length > 0) tip += $" ({s.ProfileName})";
@@ -79,11 +79,11 @@ public sealed class UIManager : IDisposable
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.Clear(Color.Transparent);
-            using var bg = new SolidBrush(Color.FromArgb(28, 32, 48));
+            using var bg = new SolidBrush(Color.FromArgb(16, 19, 32));
             using var path = RoundedRect(new Rectangle(1, 1, 30, 30), 7);
             g.FillPath(bg, path);
-            using var tile = new SolidBrush(Color.FromArgb(79, 140, 255));
-            using var dim = new SolidBrush(Color.FromArgb(70, 78, 100));
+            using var tile = new SolidBrush(Color.FromArgb(0, 217, 255));
+            using var dim = new SolidBrush(Color.FromArgb(46, 52, 78));
             for (var i = 0; i < 3; i++)
             for (var j = 0; j < 3; j++)
                 g.FillRectangle(j == 0 || (i == 1 && j == 1) ? tile : dim, 6 + i * 7, 6 + j * 7, 5, 5);

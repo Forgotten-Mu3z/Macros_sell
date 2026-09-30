@@ -20,7 +20,7 @@
     <StackPanel>
         <Border Style="{StaticResource Card}">
             <StackPanel>
-                <TextBlock Text="Input Visualizer" Style="{StaticResource CardTitle}" />
+                <ContentControl Content="Input Visualizer" ContentTemplate="{StaticResource CardHeader}" />
                 <UniformGrid Columns="4">
                     <Border Style="{StaticResource Tile}">
                         <StackPanel>

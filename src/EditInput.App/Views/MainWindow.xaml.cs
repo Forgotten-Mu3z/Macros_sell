@@ -27,8 +27,22 @@ public partial class MainWindow : Window
 
     public event Action? ExitApplicationRequested;
 
+    private void OnMinimize(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void OnMaximize(object sender, RoutedEventArgs e) =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void OnClose(object sender, RoutedEventArgs e) => Close();
+
     private void OnStateChanged(object? sender, EventArgs e)
     {
+        // With custom chrome a maximized window overhangs the screen by the resize border; pad it back in.
+        var maximized = WindowState == WindowState.Maximized;
+        Frame.Margin = maximized ? new Thickness(7) : new Thickness(0);
+        Frame.BorderThickness = maximized ? new Thickness(0) : new Thickness(1);
+        MaxButton.Content = maximized ? "\uE923" : "\uE922";
+        MaxButton.ToolTip = maximized ? "Restore" : "Maximize";
+
         _vm.WindowVisible = IsVisible && WindowState != WindowState.Minimized;
         if (WindowState == WindowState.Minimized && _minimizeToTray()) Hide();
     }
@@ -66,6 +80,8 @@ internal static class DarkTitleBar
             var on = 1;
             if (DwmSetWindowAttribute(hwnd, 20, ref on, sizeof(int)) != 0)   // DWMWA_USE_IMMERSIVE_DARK_MODE
                 DwmSetWindowAttribute(hwnd, 19, ref on, sizeof(int));        // pre-20H1 value
+            var round = 2;                                                   // DWMWCP_ROUND (Windows 11)
+            DwmSetWindowAttribute(hwnd, 33, ref round, sizeof(int));         // DWMWA_WINDOW_CORNER_PREFERENCE
         }
         catch
         {
